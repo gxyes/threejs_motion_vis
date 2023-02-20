@@ -65,7 +65,10 @@
 			let singleStepMode = false;
 			let sizeOfNextStep = 0;
 
-			const allActions = [];
+			let idleWeight;
+			let idleAction;
+
+			var allActions = [];
 			var baseActions = {
 				ArmatureAction: { weight: 1 },
 			};
@@ -165,6 +168,7 @@
 			}
 			
 			function modelLoader(name) {
+				allActions = [];
 				const loader = new GLTFLoader();
 				var path = preparedModels[name].path;		
 							
@@ -415,7 +419,6 @@
 				const settings = baseActions[ clip.name ] || additiveActions[ clip.name ];
 				setWeight( action, settings.weight );
 				action.play();
-
 			}
 
 			function modifyTimeScale( speed ) {
@@ -616,7 +619,6 @@
 				action.enabled = true;
 				action.setEffectiveTimeScale( 1 );
 				action.setEffectiveWeight( weight );
-
 			}
 
 			function onWindowResize() {
@@ -628,11 +630,21 @@
 
 			}
 
+			function updateWeightSliders() {
+
+				panelSettings[ 'modify idle weight' ] = idleWeight;
+				// console.log(panelSettings[ 'modify idle weight' ]);
+			}
+
 			function animate() {
 
 				// Render loop
 
 				requestAnimationFrame( animate );
+
+				idleWeight = allActions[0].getEffectiveWeight();
+
+				updateWeightSliders();
 
 				for ( let i = 0; i !== numAnimations; ++ i ) {
 
