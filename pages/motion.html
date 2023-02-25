@@ -80,8 +80,8 @@
 			};
 
 			const preparedModels = {
-				Model1: {path: "models/gltf/smplftryy.glb"},
-				Model2: {path: "models/gltf/acton.glb"}
+				Model1: {path: "../to_fbx/glb_models/Mousey.glb"},
+				Model2: {path: "../to_fbx/glb_models/Remy.glb"}
 			};
 
 			let panelSettings, numAnimations;
@@ -128,12 +128,12 @@
 				container.appendChild( renderer.domElement );
 
 				// model 
-				modelLoader("Model2");
+				modelLoader("Model1");
 				collectUserInput();
 
 				// camera
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
-				camera.position.set( - 1, 2, 3 );
+				camera.position.set( -1, 1, 3 );
 
 				const controls = new OrbitControls( camera, renderer.domElement );
 				controls.enablePan = true;
@@ -177,16 +177,20 @@
 				loader.load( path, function ( gltf ) {
 
 					model = gltf.scene;
+
+					console.log(model)
 				
 					// model basics
 					if (name === "Model1") {
-						model.rotateY(Math.PI/2);
-						model.rotateZ(-Math.PI/2);
-						model.position.y = model.scale.y;
-						model.scale.set(0.1, 0.1, 0.1);
+						// model.rotateY(Math.PI/2);
+						// model.rotateZ(-Math.PI/2);
+						// model.scale.set(0.5, 0.5, 0.5);
+
+						// model.position.y = model.scale.y;
+						// model.position.z = 1;
 
 						baseActions = {
-							ArmatureAction: { weight: 1 },
+							"Armature|mixamo.com|Layer0": { weight: 1 },
 						};
 
 						additiveActions = {
@@ -197,12 +201,12 @@
 						};
 
 					} else if (name === "Model2") {
-						model.rotateY(Math.PI/2);
-						model.rotateZ(-Math.PI/2);
-						model.position.y = model.scale.y;
+						// model.rotateY(Math.PI/2);
+						// model.rotateZ(-Math.PI/2);
+						// model.position.y = model.scale.y;
 
 						baseActions = {
-							ArmatureAction: { weight: 1 },
+							"Armature|mixamo.com|Layer0": { weight: 1 },
 						};
 
 						additiveActions = {

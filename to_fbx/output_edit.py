@@ -1,4 +1,5 @@
 import bpy
+import math
 from mathutils import Matrix, Vector, Quaternion, Euler
 from math import radians
 import numpy as np
@@ -99,7 +100,7 @@ def process_pose(current_frame, pose, trans, pelvis_position):
         else:
             bone.rotation_quaternion = bone_rotation
 
-        bone.keyframe_insert("rotation_quaternion", frame=current_frame)
+#        bone.keyframe_insert("rotation_quaternion", frame=current_frame)
     return
 
 # npy to fbx
@@ -182,13 +183,24 @@ def export_animated_mesh(output_path):
     ov['area']=[a for a in bpy.context.screen.areas if a.type=="VIEW_3D"][0]
 
 #    bpy.ops.transform.resize(value=(1000.0, 1000.0, 1000.0), orient_type='LOCAL')
-    bpy.data.objects['Armature'].location = (0, 0, 3)
-    # bpy.ops.transform.rotate(
-    #     value=0.349066, 
-    #     orient_axis='Y', 
-    #     orient_type='GLOBAL', 
-    #     orient_matrix_type='GLOBAL', 
-    #     constraint_axis=(False, True, False))
+    
+    bpy.data.objects['Armature'].scale = (0.008, 0.008, 0.008)
+    bpy.data.objects['Armature'].location = (0, 0.3, 0.28)
+#    bpy.data.objects['Armature'].rotation = (0, 90, 0)
+    
+    bpy.ops.transform.rotate(
+        value=math.pi/2, 
+        orient_axis='Y', 
+        orient_type='GLOBAL', 
+        orient_matrix_type='GLOBAL', 
+        constraint_axis=(False, True, False))
+        
+    bpy.ops.transform.rotate(
+        value=math.pi/2, 
+        orient_axis='Z', 
+        orient_type='GLOBAL', 
+        orient_matrix_type='GLOBAL', 
+        constraint_axis=(False, False, True))
 
     if output_path.endswith(".glb"):
         print("Exporting to glTF binary (.glb)")
@@ -216,15 +228,15 @@ if __name__ == "__main__":
     fps_target = 30
     
     # female and male model settings
-    female_model_path = "./fbx_models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
-    male_model_path = "./fbx_models/Remy.fbx"
+    female_model_path = "./fbx_templates/Mousey.fbx"
+    male_model_path = "./fbx_templates/Remy.fbx"
 
     # pose settings
     poses_path = "./acton.npy"
     poses = np.load(poses_path)
 
     # output path
-    output_path = "./remy.glb"
+    output_path = "./glb_models/Mousey_T.glb"
 
-    frame = process_poses(poses, gender="male")
+    frame = process_poses(poses, gender="female")
     export_animated_mesh(output_path)
