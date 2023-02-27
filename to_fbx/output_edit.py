@@ -100,7 +100,7 @@ def process_pose(current_frame, pose, trans, pelvis_position):
         else:
             bone.rotation_quaternion = bone_rotation
 
-#        bone.keyframe_insert("rotation_quaternion", frame=current_frame)
+        bone.keyframe_insert("rotation_quaternion", frame=current_frame)
     return
 
 # npy to fbx
@@ -184,9 +184,9 @@ def export_animated_mesh(output_path):
 
 #    bpy.ops.transform.resize(value=(1000.0, 1000.0, 1000.0), orient_type='LOCAL')
     
-    bpy.data.objects['Armature'].scale = (0.008, 0.008, 0.008)
-    bpy.data.objects['Armature'].location = (0, 0.3, 0.28)
-#    bpy.data.objects['Armature'].rotation = (0, 90, 0)
+    # bpy.data.objects['Armature'].scale = (0.008, 0.008, 0.008)
+    bpy.data.objects['Armature'].location = (0, 0, 1.04)
+    # bpy.data.objects['Armature'].rotation = (90, 90, 180)
     
     bpy.ops.transform.rotate(
         value=math.pi/2, 
@@ -228,7 +228,7 @@ if __name__ == "__main__":
     fps_target = 30
     
     # female and male model settings
-    female_model_path = "./fbx_templates/Mousey.fbx"
+    female_model_path = "./fbx_templates/Marker.fbx"
     male_model_path = "./fbx_templates/Remy.fbx"
 
     # pose settings
@@ -236,7 +236,7 @@ if __name__ == "__main__":
     poses = np.load(poses_path)
 
     # output path
-    output_path = "./glb_models/Mousey_T.glb"
+    output_path = "./glb_models/Marker.glb"
 
     frame = process_poses(poses, gender="female")
     export_animated_mesh(output_path)

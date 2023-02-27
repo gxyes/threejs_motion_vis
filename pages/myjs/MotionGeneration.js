@@ -188,7 +188,7 @@ function modelLoader(modelName){
         var currentModelName = sectionTitle.innerHTML
         
         // determine which motion
-        if (modelName === "motion1") {
+        if (modelName === "A person is walking") {
             var path = "../to_fbx/glb_models/" + currentModelName + ".glb"
         } else {
             var path = "../to_fbx/glb_models/" + currentModelName + ".glb"

@@ -49,14 +49,15 @@ function modelCard(name) {
     
 }
 
-modelCard("Aj")
 modelCard("Michelle")
-modelCard("Mousey")
 modelCard("Vanguard")
-modelCard("Aj")
-modelCard("Michelle")
+modelCard("Josh")
+modelCard("Pete")
+modelCard("Erika")
+
+modelCard("Jolleen")
 modelCard("Mousey")
-modelCard("Vanguard")
 modelCard("Aj")
-modelCard("Michelle")
-modelCard("Mousey")
+// modelCard("Marker")
+modelCard("Bryce")
+modelCard("Sophie")
