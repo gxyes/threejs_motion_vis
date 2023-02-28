@@ -99,10 +99,52 @@ function init(modelName) {
     scene.add( dirLight );
 
     // ground
-    const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 100, 100 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
-    mesh.rotation.x = - Math.PI / 2;
-    mesh.receiveShadow = true;
-    scene.add( mesh );
+    // var floorTexture = new THREE.ImageUtils.loadTexture( './imgs/checkerboard.jpg' );
+    const floorTexture = new THREE.TextureLoader().load( './imgs/checkerboard.jpg' );  
+    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+	floorTexture.repeat.set( 500, 500 );
+
+	// DoubleSide: render texture on both sides of mesh
+	var floorMaterial = new THREE.MeshPhongMaterial( { color: 0x999999, map: floorTexture, side: THREE.DoubleSide} );
+	var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 1, 1);
+	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+	scene.add(floor);
+    // scene.add( new THREE.CameraHelper( dirLight.shadow.camera ) );
+
+    // ground
+    // var plane = new THREE.PlaneGeometry( 100, 100, 100, 100 )
+    // var meshBasic = new THREE.MeshPhongMaterial( {color: 0x999999, flatShading: true, vertexColors: true, shininess: 0} ) 
+    // const wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x999999, wireframe: true, transparent: true } );
+
+    // const count = plane.attributes.position.count;
+    // const positionPlane = plane.attributes.position;
+
+    // const color = new THREE.Color();
+    // plane.setAttribute( 'color', new THREE.BufferAttribute( new Float32Array( count * 3 ), 3 ) );
+    // const colorPlane = plane.attributes.color;
+
+    // console.log(count)
+
+    // for ( let i = 0; i < count; i ++ ) {
+    //     var currentPosX = positionPlane.getX( i );
+    //     var currentPosY = positionPlane.getY( i );
+    //     // console.log("posX"+currentPosX)
+    //     // console.log("posY"+currentPosY)
+    //     if ((currentPosY == 0) && ((currentPosX == -1) || (currentPosX == 0) || (currentPosX == 1))) {
+    //         color.setRGB( 255, 0, 0 );
+    //         colorPlane.setXYZ( i, color.r, color.g, color.b );
+    //     }
+    // }
+
+    // const mesh = new THREE.Mesh( plane, meshBasic );
+    // const wireframe = new THREE.Mesh( plane, wireframeMaterial );
+    // mesh.add( wireframe );
+
+    // mesh.rotation.x = - Math.PI / 2;
+    // mesh.receiveShadow = true;
+    // scene.add( mesh );
 
     // model 
     modelLoader(modelName);
@@ -158,7 +200,7 @@ function modelLoader(modelName){
                 // add model to scene
                 scene.add(model);
 
-                console.log(model);
+                // console.log(model);
 
                 model.traverse( function ( object ) {
                     if ( object.isMesh ) object.castShadow = true;
