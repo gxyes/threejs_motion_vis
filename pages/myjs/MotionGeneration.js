@@ -100,17 +100,20 @@ function init(modelName) {
 
     // ground
     // var floorTexture = new THREE.ImageUtils.loadTexture( './imgs/checkerboard.jpg' );
-    const floorTexture = new THREE.TextureLoader().load( './imgs/checkerboard.jpg' );  
+    const floorTexture = new THREE.TextureLoader().load( './imgs/checkerboard_grey.png' );  
     floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 500, 500 );
+	floorTexture.repeat.set( 100, 100 );
 
 	// DoubleSide: render texture on both sides of mesh
 	var floorMaterial = new THREE.MeshPhongMaterial( { color: 0x999999, map: floorTexture, side: THREE.DoubleSide} );
 	var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 1, 1);
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-	floor.rotation.x = -Math.PI / 2;
+	floor.rotation.x = Math.PI / 2;
     floor.receiveShadow = true;
 	scene.add(floor);
+
+
+
     // scene.add( new THREE.CameraHelper( dirLight.shadow.camera ) );
 
     // ground
