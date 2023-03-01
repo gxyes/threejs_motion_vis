@@ -153,23 +153,25 @@ def process_poses(poses, gender):
 #    )   
     
     source_index = 0
-    frame = 1
+    frame = 63
     offset = np.array([0.0, 0.0, 0.0])
     trans = np.zeros((poses.shape[0], 3))
     
-#    for i in range(poses.shape[0]):
-#        trans[i] = [0, 0, i*0.01]
+    for i in range(poses.shape[0]):
+        trans[i] = [0, 0, i*0.01]
     
     print(trans)
     
     while source_index < poses.shape[0]:
+        
         print("Adding poses: " + str(source_index))
         scene.frame_set(frame)
+        
         process_pose(
             frame, poses[source_index], (trans[source_index] - offset), pelvis_position
         )
         source_index += sample_rate
-        frame += 1
+        frame -= 1
 
     return frame
  
@@ -190,22 +192,24 @@ def export_animated_mesh(output_path):
 #    bpy.ops.transform.resize(value=(1000.0, 1000.0, 1000.0), orient_type='LOCAL')
     
     # bpy.data.objects['Armature'].scale = (0.008, 0.008, 0.008)
-    bpy.data.objects['Armature'].location = (0, 0, 1.04)
-#    bpy.data.objects['Armature'].rotation = (90, 90, 180)
+    bpy.data.objects['Armature'].location = (0, 0, 1.04) 
+    bpy.data.objects['Armature'].rotation_euler = (0, radians(90), radians(0))
     
-    bpy.ops.transform.rotate(
-        value=math.pi/2, 
-        orient_axis='Y', 
-        orient_type='GLOBAL', 
-        orient_matrix_type='GLOBAL', 
-        constraint_axis=(False, True, False))
-        
-    bpy.ops.transform.rotate(
-        value=math.pi/2, 
-        orient_axis='Z', 
-        orient_type='GLOBAL', 
-        orient_matrix_type='GLOBAL', 
-        constraint_axis=(False, False, True))
+#    bpy.ops.transform.rotate(
+#        value=math.pi/2, 
+#        orient_axis='Y', 
+#        orient_type='GLOBAL', 
+#        orient_matrix_type='GLOBAL', 
+#        constraint_axis=(False, True, False)
+#    )
+#        
+#    bpy.ops.transform.rotate(
+#        value=math.pi/2, 
+#        orient_axis='Z', 
+#        orient_type='GLOBAL', 
+#        orient_matrix_type='GLOBAL', 
+#        constraint_axis=(False, False, True)
+#    )
 
     if output_path.endswith(".glb"):
         print("Exporting to glTF binary (.glb)")
