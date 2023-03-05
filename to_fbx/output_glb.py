@@ -263,7 +263,7 @@ if __name__ == "__main__":
 
     # pose settings
     # poses_path = "./mdm_np_angle/sample00_rep00_smpl_params.npz"
-    poses_path = "./remodiffuse_np/walking_sadly.npz"
+    poses_path = "./remodiffuse_np_angle/walking_sadly.npz"
     poses = np.load(poses_path)
 
     # output path
