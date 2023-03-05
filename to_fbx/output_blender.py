@@ -32,8 +32,8 @@ smpl_bones = {
     19: "R_Elbow",
     20: "L_Wrist",
     21: "R_Wrist",
-#    22: "L_Hand",
-#    23: "R_Hand",
+    # 22: "L_Hand",
+    # 23: "R_Hand",
 }
 
 # functions
@@ -44,6 +44,20 @@ def rod_rigues(rotvec):
     mat = np.asarray([[0, -r[2], r[1]], [r[2], 0, -r[0]], [-r[1], r[0], 0]])
     return cost * np.eye(3) + (1 - cost) * r.dot(r.T) + np.sin(theta) * mat
 
+
+def bone_name_edit(gender):
+    if gender == 'female':
+        bone_prefix = "f_avg_"
+    elif gender == 'male':
+        bone_prefix = "m_avg_"
+        
+    armature = bpy.data.armatures['Armature']        
+    for bone_idx, bone_name in smpl_bones.items():
+        bone_name = bone_prefix + bone_name
+        smpl_bones[bone_idx] = bone_name
+        
+    
+    
 def bone_execute():
     # change bone's name
     armature = bpy.data.armatures['Armature']
@@ -69,6 +83,7 @@ def bone_execute():
         object.data.edit_bones[bone].tail[1] = object.data.edit_bones[bone].head[1] + 2
         object.data.edit_bones[bone].tail[2] = object.data.edit_bones[bone].head[2]
         object.data.edit_bones[bone].roll = 0
+
 
 def process_pose(current_frame, pose, trans, pelvis_position):
     if pose.shape[0] == 72:
@@ -105,7 +120,7 @@ def process_pose(current_frame, pose, trans, pelvis_position):
     return
 
 # npy to fbx
-def process_poses(poses, gender):
+def process_poses(poses, gender, model_type, model_path):
     
     source_index = 0
     frame = 1
@@ -114,13 +129,6 @@ def process_poses(poses, gender):
     global_orient = poses['global_orient']
     body_pose = poses['body_pose']
     poses = np.concatenate((global_orient,body_pose),axis=1)
-    
-    # basic info settings
-    if gender == "female":
-        model_path = female_model_path
-        
-    elif gender == "male":
-        model_path = male_model_path
         
     # print basic info
     print(f"Gender: {gender}")
@@ -146,7 +154,10 @@ def process_poses(poses, gender):
     bpy.ops.object.mode_set(mode="EDIT")
     
     # change bone settings
-    bone_execute()
+    if model_type == 'mixamo':
+        bone_execute()
+    elif model_type == 'smpl':
+        bone_name_edit(gender)
     
     print("Done with changing bones")
     print("--------------------------------------------------")
@@ -183,7 +194,6 @@ def process_poses(poses, gender):
 #    return frame
  
 def export_animated_mesh(output_path):
-    print("here")
     output_dir = os.path.dirname(output_path)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir, exist_ok=True)
@@ -234,17 +244,19 @@ if __name__ == "__main__":
     fps_source = 30
     fps_target = 30
     
-    # female and male model settings
-    female_model_path = "./fbx_templates/Michelle.fbx"
-    male_model_path = "./fbx_templates/Remy.fbx"
+    # gender and model type
+    gender = "female"
+    model_type = 'mixamo'
+    
+    # model template
+    model_path = "./fbx_templates/XBot.fbx"
 
     # pose settings
-
     poses_path = "./walking_sadly.npz"
     poses = np.load(poses_path)
 
     # output path
-    output_path = "./glb_models/Michelle.glb"
+    output_path = "./glb_models/XBot.glb"
 
-    frame = process_poses(poses, gender="female")
-    export_animated_mesh(output_path)
+    frame = process_poses(poses=poses, gender=gender, model_type=model_type, model_path=model_path)
+    export_animated_mesh(output_path=output_path)
