@@ -256,18 +256,18 @@ if __name__ == "__main__":
 
     # framework settings
     # framework = "mdm"
-    framework = "remodiffuse"
+    framework = "mdm"
     
     # model template
     model_path = "./fbx_templates/XBot.fbx"
 
     # pose settings
     # poses_path = "./mdm_np_angle/sample00_rep00_smpl_params.npz"
-    poses_path = "./remodiffuse_np_angle/walking_sadly.npz"
+    poses_path = "./mdm_np_original_result/A_person_does_a_cartwheel_and_then_runs_in_a_zigzag_pattern_smpl_3Dparams.npz"
     poses = np.load(poses_path)
 
     # output path
-    output_path = "./glb_models/XBot.glb"
+    output_path = "./glb_models/XBot_A_person_does_a_cartwheel_and_then_runs_in_a_zigzag_pattern.glb"
 
     frame = process_poses(poses=poses, gender=gender, model_type=model_type, model_path=model_path, framework=framework)
     export_animated_mesh(output_path=output_path)

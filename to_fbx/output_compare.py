@@ -14,8 +14,8 @@ def scene_init(image_path):
     scene = bpy.data.scenes["Scene"]
         
     # Light & Camera
-    bpy.data.objects['Camera'].location = (11, -6, 2.76)
-    bpy.data.objects['Camera'].rotation_euler = (radians(80), radians(0), radians(60))
+    bpy.data.objects['Camera'].location = (3.9932, -4.235, 7.1698)
+    bpy.data.objects['Camera'].rotation_euler = (radians(45), radians(0), radians(45))
     bpy.data.objects['Light'].location = (1, -3, 6)
 
     # delete the default cube
@@ -43,28 +43,33 @@ def add_avatar(model_path, avatar_index):
 def edit_avatars(num_frames_show, total_frames):
     sample_rate = total_frames // num_frames_show        
         
-    for i in range(num_frames_show):        
-        avatar_name = "Armature.00" + str(i)
+    for i in range(num_frames_show):   
+        if i <= 9:
+            avatar_name = "Armature.00" + str(i)
+        else: 
+            avatar_name = "Armature.0" + str(i)
+#        avatar_name = "Armature.00" + str(i)
         if i == 0:
             avatar_name = "Armature"
         
-        i = i % 5
+        # i = i % 5
         # get armature
         armature = bpy.data.objects[avatar_name]
-        armature.location.y = i*0.6
+        # armature.location.y = i*0.6
+        armature.location.z = 0.057978
         
         # get mesh
-#        meshs = []
-#        for child in armature.children:
-#            meshs.append(child)
+        meshs = []
+        for child in armature.children:
+            meshs.append(child)
         
         
-#        for mesh in meshs:
-#            if i != num_frames_show // 2:
-#                mesh.active_material.blend_method = "HASHED"
-#                mesh.active_material.shadow_method = "HASHED"
-#                inputs = mesh.active_material.node_tree.nodes["Principled BSDF"].inputs  
+        for mesh in meshs:
+            mesh.active_material.blend_method = "HASHED"
+            mesh.active_material.shadow_method = "HASHED"
+            inputs = mesh.active_material.node_tree.nodes["Principled BSDF"].inputs  
 #                inputs['Alpha'].default_value = 0.1 * (num_frames_show - abs(i-num_frames_show // 2))
+            inputs[0].default_value[0] = (num_frames_show-i)/(num_frames_show+1)*(1-0.316) + 0.310
 #            
         # set action offset
         offset = sample_rate*i
@@ -76,7 +81,7 @@ def edit_avatars(num_frames_show, total_frames):
             for kf in fc.keyframe_points:
                 kf.co.x += offset
             
-    bpy.context.scene.frame_set(50)
+    bpy.context.scene.frame_set(119)
  
 def change_model_x(pos_x): 
     for i in range(num_frames_show):
@@ -87,8 +92,8 @@ def change_model_x(pos_x):
                           
     
 if __name__ == "__main__":
-    num_frames_show = 5
-    total_frames = 60
+    num_frames_show = 8
+    total_frames = 120
     pos_x = 2
     
     # background color
@@ -97,7 +102,7 @@ if __name__ == "__main__":
     bpy.context.scene.world.color = (0.0871424, 0.0871424, 0.0871424)
     
     model_path_remodiffuse = "./glb_models/Michelle.glb"
-    model_path_mdm = "./glb_models/XBot.glb"
+    model_path_mdm = "./glb_models/XBot_A_person_skips_in_a_circle.glb"
     
     ground_img_path = "D:/threejs_motion_vis/to_fbx/img/checkerboard_more.png" 
     
@@ -105,12 +110,12 @@ if __name__ == "__main__":
     scene_init(image_path=ground_img_path)
     
     # add avatars for remodiffuse
-    for i in range(num_frames_show):
-        add_avatar(model_path=model_path_remodiffuse, avatar_index=i)
-        
-    # add avatars for mdm
 #    for i in range(num_frames_show):
-#        add_avatar(model_path=model_path_mdm, avatar_index=i)
+#        add_avatar(model_path=model_path_remodiffuse, avatar_index=i)
+#        
+    # add avatars for mdm
+    for i in range(num_frames_show):
+        add_avatar(model_path=model_path_mdm, avatar_index=i)
 
     # edit position & animations
     edit_avatars(num_frames_show, total_frames)
