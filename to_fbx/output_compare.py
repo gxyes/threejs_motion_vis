@@ -43,33 +43,32 @@ def add_avatar(model_path, avatar_index):
 def edit_avatars(num_frames_show, total_frames):
     sample_rate = total_frames // num_frames_show        
         
-    for i in range(num_frames_show*2):        
+    for i in range(num_frames_show):        
         avatar_name = "Armature.00" + str(i)
         if i == 0:
             avatar_name = "Armature"
         
         i = i % 5
-        print(i)
         # get armature
         armature = bpy.data.objects[avatar_name]
         armature.location.y = i*0.6
         
         # get mesh
-        meshs = []
-        for child in armature.children:
-            meshs.append(child)
+#        meshs = []
+#        for child in armature.children:
+#            meshs.append(child)
         
         
-        for mesh in meshs:
-            if i != num_frames_show // 2:
-                mesh.active_material.blend_method = "HASHED"
-                mesh.active_material.shadow_method = "HASHED"
-                inputs = mesh.active_material.node_tree.nodes["Principled BSDF"].inputs  
-                inputs['Alpha'].default_value = 0.1 * (num_frames_show - abs(i-num_frames_show // 2))
-            
+#        for mesh in meshs:
+#            if i != num_frames_show // 2:
+#                mesh.active_material.blend_method = "HASHED"
+#                mesh.active_material.shadow_method = "HASHED"
+#                inputs = mesh.active_material.node_tree.nodes["Principled BSDF"].inputs  
+#                inputs['Alpha'].default_value = 0.1 * (num_frames_show - abs(i-num_frames_show // 2))
+#            
         # set action offset
         offset = sample_rate*i
-        # print(offset)
+        print(offset)
         
         # get action
         action = armature.animation_data.action
@@ -77,7 +76,7 @@ def edit_avatars(num_frames_show, total_frames):
             for kf in fc.keyframe_points:
                 kf.co.x += offset
             
-    bpy.context.scene.frame_set(120)
+    bpy.context.scene.frame_set(50)
  
 def change_model_x(pos_x): 
     for i in range(num_frames_show):
@@ -89,12 +88,13 @@ def change_model_x(pos_x):
     
 if __name__ == "__main__":
     num_frames_show = 5
-    total_frames = 120
+    total_frames = 60
     pos_x = 2
     
-    # x pos
-    remodiffusex = 5
-    mdmx = 8
+    # background color
+#    inputs = bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[0].default_value = (1, 1, 1, 1)
+    
+    bpy.context.scene.world.color = (0.0871424, 0.0871424, 0.0871424)
     
     model_path_remodiffuse = "./glb_models/Michelle.glb"
     model_path_mdm = "./glb_models/XBot.glb"
@@ -109,11 +109,11 @@ if __name__ == "__main__":
         add_avatar(model_path=model_path_remodiffuse, avatar_index=i)
         
     # add avatars for mdm
-    for i in range(num_frames_show):
-        add_avatar(model_path=model_path_mdm, avatar_index=i)
+#    for i in range(num_frames_show):
+#        add_avatar(model_path=model_path_mdm, avatar_index=i)
 
     # edit position & animations
     edit_avatars(num_frames_show, total_frames)
     
     # move one set of models by pos_x
-    change_model_x(pos_x)
+    # change_model_x(pos_x)
