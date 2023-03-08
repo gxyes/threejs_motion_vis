@@ -14,6 +14,9 @@ def scene_init(image_path):
     scene = bpy.data.scenes["Scene"]
         
     # Light & Camera
+#    bpy.data.objects['Camera'].location = (-2.8615, -8.368, 1.0562)
+#    bpy.data.objects['Camera'].rotation_euler = (radians(90), radians(0), radians(0))
+    
     bpy.data.objects['Camera'].location = (3.9932, -4.235, 7.1698)
     bpy.data.objects['Camera'].rotation_euler = (radians(45), radians(0), radians(45))
     bpy.data.objects['Light'].location = (1, -3, 6)
@@ -55,7 +58,7 @@ def edit_avatars(num_frames_show, total_frames):
         # i = i % 5
         # get armature
         armature = bpy.data.objects[avatar_name]
-        # armature.location.y = i*0.6
+        # armature.location.x = -i*0.8
         armature.location.z = 0.057978
         
         # get mesh
@@ -102,7 +105,7 @@ if __name__ == "__main__":
     bpy.context.scene.world.color = (0.0871424, 0.0871424, 0.0871424)
     
     model_path_remodiffuse = "./glb_models/Michelle.glb"
-    model_path_mdm = "./glb_models/XBot_A_person_skips_in_a_circle.glb"
+    model_path_mdm = "./glb_models/XBot_circle_guo.glb"
     
     ground_img_path = "D:/threejs_motion_vis/to_fbx/img/checkerboard_more.png" 
     

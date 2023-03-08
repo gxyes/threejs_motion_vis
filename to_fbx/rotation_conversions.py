@@ -552,6 +552,23 @@ def matrix_to_rotation_6d(matrix: torch.Tensor) -> torch.Tensor:
     return matrix[..., :2, :].clone().reshape(*matrix.size()[:-2], 6)
 
 
+def save_npy_motiondiffuse(motions, save_path):
+    num_frames = motions.shape[0]
+    from visualize.simplify_loc2rot import joints2smpl
+    j2s = joints2smpl(num_frames=num_frames, device_id=0, cuda=False)
+
+    print(motions)
+    
+    motion_tensor, opt_dict = j2s.joint2smpl(motions)  # [nframes, njoints, 3]
+    motions = motion_tensor.cpu().numpy()
+    data_dict = {
+        'motion': motions[0, :, :, :num_frames],
+        'thetas': motions[0, :-1, :, :num_frames],
+        'root_translation': motions[0, -1, :3, :num_frames],
+    }
+    np.save(save_path, data_dict)
+
+
 def save_npy(npy_path, sample_idx, rep_idx, save_path):
     motions = np.load(npy_path, allow_pickle=True)
     if npy_path.endswith('.npz'):
@@ -559,17 +576,20 @@ def save_npy(npy_path, sample_idx, rep_idx, save_path):
     motions = motions[None][0]
     bs, njoints, nfeats, nframes = motions['motion'].shape
 
-    # print(bs,njoints,nfeats,nframes)
+    print(bs,njoints,nfeats,nframes)
 
     total_num_samples = motions['num_samples']
     absl_idx = rep_idx * total_num_samples + sample_idx
     real_num_frames = motions['lengths'][absl_idx]
     num_frames = motions['motion'][absl_idx].shape[-1]
 
+    print(real_num_frames)
+
     from visualize.simplify_loc2rot import joints2smpl
     j2s = joints2smpl(num_frames=num_frames, device_id=0, cuda=False)
 
     if nfeats == 3:
+        print(motions['motion'][absl_idx].transpose(2, 0, 1))
         print(f'Running SMPLify For sample [{sample_idx}], repetition [{rep_idx}], it may take a few minutes.')
         motion_tensor, opt_dict = j2s.joint2smpl(motions['motion'][absl_idx].transpose(2, 0, 1))  # [nframes, njoints, 3]
         motions['motion'] = motion_tensor.cpu().numpy()
@@ -584,15 +604,52 @@ def save_npy(npy_path, sample_idx, rep_idx, save_path):
     np.save(save_path, data_dict)
 
 if __name__ == "__main__":
-    file_path = "./to_fbx/mdm_np_original_result/A_person_hops_on_one_foot_and_claps_hands_above_head.npy"
+    # for mdm
+    # file_path = "./to_fbx/mdm_np_original_result/The_person_runs_in_a_zigzag_pattern_mdm.npy"
+    # out_npy_path = file_path.replace('.npy', '_smpl_6Dparams.npy')
+    # out_smpl_path = file_path.replace('.npy', '_smpl_3Dparams')
+    
+    # import numpy as np
+
+    # # to smpl
+    # save_npy(npy_path=file_path, sample_idx=0, rep_idx=2, save_path=out_npy_path)
+    
+    # # 6D to axis angle
+    # smpl = np.load(out_npy_path, allow_pickle=True).item()
+
+    # transl = smpl["root_translation"].transpose(1,0)
+    # poses = smpl['thetas']
+    # poses_angle = []
+
+    # for i in range(poses.shape[0]):
+    #     # for each joint
+    #     joint_pose = torch.tensor(poses[i].transpose(1,0))
+    #     joint_pose_matrix = rotation_6d_to_matrix(joint_pose)
+    #     joint_pose_angle = matrix_to_axis_angle(joint_pose_matrix).numpy().transpose(1,0)
+    #     poses_angle.append(joint_pose_angle)
+
+    # poses_angle = np.array(poses_angle)
+    # num_frames =  poses_angle.shape[2]
+    # poses_angle = poses_angle.reshape(-1, num_frames).transpose(1,0)
+
+    # np.savez(out_smpl_path, body_pose=poses_angle, transl=transl)
+    # ==================================================================================
+    # for remodiffuse
+    import numpy as np
+    file_path = "./to_fbx/guo_np_original_result/guo_circle.npy"
+    motions = np.load(file_path)
+    print(motions.shape)
+
+    # from data_loaders.humanml.scripts.motion_process import recover_from_ric
+    # motions = recover_from_ric(torch.tensor(motions), 22).numpy()
+    # print(motions.shape)
+
     out_npy_path = file_path.replace('.npy', '_smpl_6Dparams.npy')
     out_smpl_path = file_path.replace('.npy', '_smpl_3Dparams')
-    
-    import numpy as np
 
     # to smpl
-    save_npy(npy_path=file_path, sample_idx=0, rep_idx=2, save_path=out_npy_path)
-    
+    save_npy_motiondiffuse(motions=motions, save_path=out_npy_path)
+
     # 6D to axis angle
     smpl = np.load(out_npy_path, allow_pickle=True).item()
 
@@ -612,3 +669,35 @@ if __name__ == "__main__":
     poses_angle = poses_angle.reshape(-1, num_frames).transpose(1,0)
 
     np.savez(out_smpl_path, body_pose=poses_angle, transl=transl)
+    
+
+    # ==================================================================================
+    # for motiondiffuse
+    # import numpy as np
+    # file_path = "./to_fbx/motiondiffuse_np_original_result/zigzagpattern_motiondiffuse.npy"
+    # motions = np.load(file_path)
+    # out_npy_path = file_path.replace('.npy', '_smpl_6Dparams.npy')
+    # out_smpl_path = file_path.replace('.npy', '_smpl_3Dparams')
+
+    # # to smpl
+    # save_npy_motiondiffuse(motions=motions, save_path=out_npy_path)
+
+    # # 6D to axis angle
+    # smpl = np.load(out_npy_path, allow_pickle=True).item()
+
+    # transl = smpl["root_translation"].transpose(1,0)
+    # poses = smpl['thetas']
+    # poses_angle = []
+
+    # for i in range(poses.shape[0]):
+    #     # for each joint
+    #     joint_pose = torch.tensor(poses[i].transpose(1,0))
+    #     joint_pose_matrix = rotation_6d_to_matrix(joint_pose)
+    #     joint_pose_angle = matrix_to_axis_angle(joint_pose_matrix).numpy().transpose(1,0)
+    #     poses_angle.append(joint_pose_angle)
+
+    # poses_angle = np.array(poses_angle)
+    # num_frames =  poses_angle.shape[2]
+    # poses_angle = poses_angle.reshape(-1, num_frames).transpose(1,0)
+
+    # np.savez(out_smpl_path, body_pose=poses_angle, transl=transl)
