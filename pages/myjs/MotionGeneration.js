@@ -231,12 +231,14 @@ function modelLoader(modelName){
         })
     } else {
         var currentModelName = sectionTitle.innerHTML
+        var currentModelMotion1 = currentModelName + "_circle"
+        var currentModelMotion2 = currentModelName + "_zigzag"
         
         // determine which motion
-        if (modelName === "A person is walking") {
-            var path = "../to_fbx/glb_models/" + currentModelName + ".glb"
+        if (modelName === "A person skips in a circle.") {
+            var path = "../to_fbx/glb_models/" + currentModelMotion1 + ".glb"
         } else {
-            var path = "../to_fbx/glb_models/" + currentModelName + ".glb"
+            var path = "../to_fbx/glb_models/" + currentModelMotion2 + ".glb"
         }
 
         loader.load( path, function ( gltf ) {
