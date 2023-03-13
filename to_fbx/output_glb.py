@@ -264,17 +264,17 @@ if __name__ == "__main__":
     # framework = "motiondiffuse"
     
     # model template
-    model_path = "./fbx_templates/XBot.fbx"
+    model_path = "./fbx_templates/Michelle.fbx"
 
     # pose settings
     # poses_path = "./mdm_np_angle/sample00_rep00_smpl_params.npz"
-    poses_path = "./guo_np_original_result/guo_circle_smpl_3Dparams.npz"
-    # poses_path = "./motiondiffuse_np_original_result/skipsinacircle_smpl_3Dparams.npz"
+    # poses_path = "./guo_np_original_result/guo_circle_smpl_3Dparams.npz"
+    poses_path = "./remodiffuse_np_original_result/circle_remodiffuse_smpl_3Dparams.npz"
     poses = np.load(poses_path)
 
     # output path
     # output_path = "./glb_models/XBot_A_person_hops_on_one_foot_and_claps_hands_above_head_mdm.glb"
-    output_path = "./glb_models/XBot_circle_guo.glb"
+    output_path = "./glb_models/Michelle_circle.glb"
 
     frame = process_poses(poses=poses, gender=gender, model_type=model_type, model_path=model_path, framework=framework)
     export_animated_mesh(output_path=output_path)
