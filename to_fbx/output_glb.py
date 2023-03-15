@@ -96,6 +96,9 @@ def process_pose(current_frame, pose, trans, pelvis_position):
     armature = bpy.data.objects['Armature']
     
     bones = armature.pose.bones
+    
+    trans[2] = 0
+    
     bones[smpl_bones[0]].location = (
         Vector((100 * trans[1], 100 * trans[2], 100 * trans[0])) - pelvis_position
     )
@@ -218,7 +221,8 @@ def export_animated_mesh(output_path):
 
     
 #    bpy.data.objects['Armature'].scale = (0.008, 0.008, 0.008)
-    bpy.data.objects['Armature'].location = (0, 0, -0.12) 
+#    bpy.data.objects['Armature'].location = (0, 0, -0.12) 
+    bpy.data.objects['Armature'].location = (0, 0, 0.09) 
     bpy.data.objects['Armature'].rotation_euler = (radians(180), radians(270), radians(0))
     
 #    bpy.data.objects['checkerboard_more'].rotation_euler = (radians(180), radians(0), radians(0))
@@ -264,17 +268,17 @@ if __name__ == "__main__":
     # framework = "motiondiffuse"
     
     # model template
-    model_path = "./fbx_templates/Michelle.fbx"
+    model_path = "./fbx_templates/XBot.fbx"
 
     # pose settings
-    # poses_path = "./mdm_np_angle/sample00_rep00_smpl_params.npz"
+    # poses_path = "./mdm_np_original_result/A_person_skips_in_a_circle_smpl_3Dparams.npz"
     # poses_path = "./guo_np_original_result/guo_circle_smpl_3Dparams.npz"
-    poses_path = "./remodiffuse_np_original_result/circle_remodiffuse_smpl_3Dparams.npz"
+    poses_path = "./remodiffuse_np_original_result/zigzag_remodiffuse_smpl_3Dparamstrytry.npz"
     poses = np.load(poses_path)
 
     # output path
     # output_path = "./glb_models/XBot_A_person_hops_on_one_foot_and_claps_hands_above_head_mdm.glb"
-    output_path = "./glb_models/Michelle_circle.glb"
+    output_path = "./glb_models/XBot_zigzag2.glb"
 
     frame = process_poses(poses=poses, gender=gender, model_type=model_type, model_path=model_path, framework=framework)
     export_animated_mesh(output_path=output_path)
